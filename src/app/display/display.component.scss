@@ -1,0 +1,22 @@
+.display-container {
+    margin: 20px;
+}
+
+.mat-table {
+    width: 100%;
+}
+
+.mat-header-row * {
+    font-size: large;
+}
+
+.thumbnail {
+    margin: auto !important;
+    background-color: black;
+    width: 250px;
+    height: 200px;
+    display: inline-block; /* makes it fit in like an <img> */
+    background-size: cover; /* or contain */
+    background-position: center center;
+    background-repeat: no-repeat;
+}

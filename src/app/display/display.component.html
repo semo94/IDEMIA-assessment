@@ -3,7 +3,7 @@
     It also takes care of unsubscribing from observables automatically.
 -->
 <div class="display-container">
-    <div class="counter-container" *ngIf="images | async as list">
+    <div class="counter-container, mat-h2" *ngIf="images | async as list">
         <P>Total Image(s): {{list.counter}}</P>
     </div>
     <div class="list-container" *ngIf="images | async as list">
@@ -27,8 +27,8 @@
             <ng-container matColumnDef="thumbnail">
                 <th mat-header-cell class="dc-label" *matHeaderCellDef>Image</th>
                 <td mat-cell class="dc-content" *matCellDef="let element">
-                    <div class="imagePreview" *ngIf="element.dataURL && element.dataURL !== ''">
-                        <img [src]="element.dataURL" [alt]="element.name"/>
+                    <div class="thumbnail" style="background-image: url({{element.dataURL}});" *ngIf="element.dataURL && element.dataURL !== ''">
+                        <!-- <img [src]="element.dataURL" [alt]="element.name"/> -->
                     </div>
                 </td>
             </ng-container>

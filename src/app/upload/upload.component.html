@@ -1,6 +1,6 @@
 <div class="upload-container">
     <ngx-file-drop [showBrowseBtn]="true" multiple="false" accept="image/*" dropZoneLabel="Drop Area"
-        browseBtnLabel="File Upload" (onFileDrop)="upload($event)">
+        browseBtnLabel="File Upload" dropZoneClassName="drop-zone-container" contentClassName="upload-content" browseBtnClassName="selector-container" (onFileDrop)="upload($event)">
     </ngx-file-drop>
 </div>
 
