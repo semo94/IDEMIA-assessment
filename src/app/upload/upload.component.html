@@ -1,4 +1,6 @@
-<div class="upload-container"> 
-    <app-image-dropper></app-image-dropper>
-    <app-image-selector></app-image-selector>
+<div class="upload-container">
+    <ngx-file-drop [showBrowseBtn]="true" multiple="false" accept="image/*" dropZoneLabel="Drop Area"
+        browseBtnLabel="File Upload" (onFileDrop)="upload($event)">
+    </ngx-file-drop>
 </div>
+
