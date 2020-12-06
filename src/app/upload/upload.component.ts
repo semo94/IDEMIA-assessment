@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
 import { Image } from '../store/models/image.model';
+import { Store } from '@ngrx/store';
+import { AppState } from '../app.state';
+import * as ImagesActions from '../store/actions/images.actions';
 
 @Component({
   selector: 'app-upload',
@@ -12,10 +15,8 @@ export class UploadComponent implements OnInit {
 
   data: Image;
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
+  constructor(private store: Store<AppState>) { }
+  ngOnInit(): void { }
 
   public upload(input: NgxFileDropEntry[]) {
     if (this.isInputValid(input)) {
@@ -24,7 +25,7 @@ export class UploadComponent implements OnInit {
         const reader = new FileReader();
         reader.onload = () => {
           this.prepareData(reader.result as string, file);
-          console.log(this.data);
+          this.store.dispatch(new ImagesActions.AddImage(this.data));
         };
         reader.readAsDataURL(file);
       });
