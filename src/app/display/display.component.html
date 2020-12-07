@@ -28,7 +28,6 @@
                 <th mat-header-cell class="dc-label" *matHeaderCellDef>Image</th>
                 <td mat-cell class="dc-content" *matCellDef="let element">
                     <div class="thumbnail" style="background-image: url({{element.dataURL}});" *ngIf="element.dataURL && element.dataURL !== ''">
-                        <!-- <img [src]="element.dataURL" [alt]="element.name"/> -->
                     </div>
                 </td>
             </ng-container>
