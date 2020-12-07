@@ -2,6 +2,8 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.12.
 
+![Electron App Screenshot](src/assets/app.png)
+
 ## Getting started...
 
 1) Clone the project:
