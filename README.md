@@ -1,6 +1,15 @@
-# TechnicalAssessment
+# Serverless Image Uploader
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.12.
+
+## Getting started...
+
+1) Clone the project:
+`git clone https://github.com/semo94/IDEMIA-assessment.git`
+2) Enter project directory:
+`cd IDEMIA-assessment/`
+3) Install project dependencies:
+`npm install`
 
 ## Development server
 
@@ -21,6 +30,15 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 ## Running end-to-end tests
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+
+## Running Electron Integration
+
+```bash
+# Development Environment
+npm run start:electron
+# Production Environment
+npm run start:electron-prod
+```
 
 ## Further help
 
