@@ -4,7 +4,8 @@ import { Image } from '../store/models/image.model';
 import { ElectronService } from 'ngx-electron';
 import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
 import { Observable, Observer } from 'rxjs';
-
+import * as imageFilterCore from 'image-filter-core';
+import * as imageGrayscale from 'image-filter-grayscale';
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +19,9 @@ export class ImageManagerService {
     return new Observable((observer: Observer<Image>) => {
       this.constructFileObject(input, (file: File) => {
         const reader = new FileReader();
-        reader.onload = () => {
-          const dataURL = reader.result as string;
+        reader.onload = async () => {
+          let dataURL = reader.result as string;
+          dataURL = await this.convert2Grayscale(dataURL);
           this.saveFile(dataURL, file.name);
           this.prepareData(dataURL, file);
           observer.next(this.data);
@@ -56,6 +58,31 @@ export class ImageManagerService {
     if (this.electronService.isElectronApp) {
       this.electronService.ipcRenderer.send('delete_image', name);
     }
+  }
+
+  public async convert2Grayscale(dataURL: string) {
+    const imageData = await this.drawImage(dataURL);
+    const converted = await imageGrayscale(imageData, 4)
+    .then((result: any) => {
+        return imageFilterCore.convertImageDataToCanvasURL(result);
+    }).catch((error: any) => { console.log(error); });
+    return converted;
+  }
+
+  public drawImage(dataURL: string) {
+    return new Promise<ImageData>(resolved => {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      const img = new Image();
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        context.drawImage(img, 0, 0, img.width, img.height);
+        const imageData = context.getImageData(0, 0, img.width, img.height);
+        resolved(imageData);
+      };
+      img.src = dataURL;
+    });
   }
 
   public isInputValid(input: NgxFileDropEntry[]) {
@@ -96,5 +123,3 @@ export class ImageManagerService {
     };
   }
 }
-
-

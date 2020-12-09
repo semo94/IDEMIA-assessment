@@ -26,6 +26,7 @@
     "@angular/router": "~9.1.12",
     "@ngrx/store": "9.1",
     "buffer": "^4.9.2",
+    "image-filter-core": "^2.0.2",
     "image-filter-grayscale": "^1.0.1",
     "ngx-electron": "^2.2.0",
     "ngx-file-drop": "^9.0.1",
