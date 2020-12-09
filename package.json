@@ -25,6 +25,8 @@
     "@angular/platform-browser-dynamic": "~9.1.12",
     "@angular/router": "~9.1.12",
     "@ngrx/store": "9.1",
+    "image-filter-grayscale": "^1.0.1",
+    "ngx-electron": "^2.2.0",
     "ngx-file-drop": "^9.0.1",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",

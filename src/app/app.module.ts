@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { NgxFileDropModule } from 'ngx-file-drop';
 import { StoreModule } from '@ngrx/store';
 import { MatTableModule } from '@angular/material/table' ;
+import { NgxElectronModule } from 'ngx-electron';
 
 import { AppComponent } from './app.component';
 import { UploadComponent } from './upload/upload.component';
@@ -21,6 +22,7 @@ import { ImagesReducer } from './store/reducers/images.reducer';
     MatTableModule,
     BrowserAnimationsModule,
     NgxFileDropModule,
+    NgxElectronModule,
     StoreModule.forRoot({
       images: ImagesReducer
     })

@@ -1,4 +1,11 @@
-﻿const { app, BrowserWindow } = require('electron')
+﻿const {
+  app,
+  BrowserWindow,
+  ipcMain
+} = require('electron');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
 
 let win;
 
@@ -8,16 +15,16 @@ function createWindow() {
     width: 800,
     height: 600,
     backgroundColor: '#ffffff',
-    icon: `file://${__dirname}/dist/favicon.ico`
+    webPreferences: { nodeIntegration: true }
   })
 
   win.loadURL(`file://${__dirname}/dist/index.html`)
 
   //// uncomment below to open the DevTools.
-  // win.webContents.openDevTools()
+  win.webContents.openDevTools()
 
   // Event when the window is closed.
-  win.on('closed', function () {
+  win.on('closed', () => {
     win = null
   })
 }
@@ -26,7 +33,7 @@ function createWindow() {
 app.on('ready', createWindow)
 
 // Quit when all windows are closed.
-app.on('window-all-closed', function () {
+app.on('window-all-closed', () => {
 
   // On macOS specific close process
   if (process.platform !== 'darwin') {
@@ -34,9 +41,30 @@ app.on('window-all-closed', function () {
   }
 })
 
-app.on('activate', function () {
+app.on('activate', () => {
   // macOS specific close process
   if (win === null) {
     createWindow()
   }
+})
+
+ipcMain.on('save_image', (event, img) => {
+  // create images folder if not exist
+  const homedir = os.homedir();
+  const dir = path.resolve(homedir, 'IDM_Photo');
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+  }
+  // construct the path of the image
+  const imagePath = path.resolve(dir, img.name);
+  fs.writeFile(imagePath, img.data, 'base64', (error) => {
+      if (error)
+        throw error;
+      console.log('File has been saved on: ', imagePath);
+    })
+})
+
+
+ipcMain.on('delete_image', (event, data) => {
+
 })

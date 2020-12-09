@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { Image } from '../store/models/image.model';
+import { ElectronService } from 'ngx-electron';
 import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
 import { Observable, Observer } from 'rxjs';
 
@@ -11,21 +12,30 @@ import { Observable, Observer } from 'rxjs';
 export class UploaderService {
   data: Image;
 
-  constructor() { }
+  constructor(private electronService: ElectronService) { }
 
   public generateResult(input: NgxFileDropEntry): Observable<any> {
     return new Observable((observer: Observer<Image>) => {
-      const fileEntry = input.fileEntry as FileSystemFileEntry;
-      fileEntry.file((file: File) => {
+      this.constructFileObject(input, (file: File) => {
         const reader = new FileReader();
         reader.onload = () => {
-          this.prepareData(reader.result as string, file);
+          const dataURL = reader.result as string;
+          const decodedImage = this.decodeBase64Image(dataURL);
+          if (this.electronService.isElectronApp) {
+            this.electronService.ipcRenderer.send('save_image', { data: decodedImage.data, name: file.name });
+          }
+          this.prepareData(dataURL, file);
           observer.next(this.data);
           observer.complete();
         };
         reader.readAsDataURL(file);
       });
     });
+  }
+
+  public constructFileObject(input, callback) {
+    const fileEntry = input.fileEntry as FileSystemFileEntry;
+    fileEntry.file(callback);
   }
 
   public prepareData(dataURL: string, file: File) {
@@ -66,6 +76,14 @@ export class UploaderService {
       }
     }
     return isFileAllowed;
+  }
+
+  public decodeBase64Image(dataString: string) {
+    const matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    return {
+      type : matches[1],
+      data : Buffer.from(matches[2], 'base64')
+    };
   }
 }
 
