@@ -33,7 +33,7 @@
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns, sticky: true"></tr>
             <ng-container *ngIf="list.info">
-                <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index" (dblclick)="delete(i)" class="image-row"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index" (dblclick)="delete(i, row.name, row.format)" class="image-row"></tr>
             </ng-container>
         </table>
     </div>

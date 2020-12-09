@@ -9,7 +9,7 @@ import { Observable, Observer } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class UploaderService {
+export class ImageManagerService {
   data: Image;
 
   constructor(private electronService: ElectronService) { }
@@ -20,10 +20,7 @@ export class UploaderService {
         const reader = new FileReader();
         reader.onload = () => {
           const dataURL = reader.result as string;
-          const decodedImage = this.decodeBase64Image(dataURL);
-          if (this.electronService.isElectronApp) {
-            this.electronService.ipcRenderer.send('save_image', { data: decodedImage.data, name: file.name });
-          }
+          this.saveFile(dataURL, file.name);
           this.prepareData(dataURL, file);
           observer.next(this.data);
           observer.complete();
@@ -41,11 +38,24 @@ export class UploaderService {
   public prepareData(dataURL: string, file: File) {
     this.data = {
       name: file.name.replace(/\.[^/.]+$/, ''),
-      format: file.type,
+      format: file.name.split('.').pop(),
       size: Math.round(file.size / 1024) + ' KB',
       date: formatDate(new Date(), 'yyyy-MM-dd', 'en'),
       dataURL
     };
+  }
+
+  public saveFile(dataURL: string, name: string) {
+    const decodedImage = this.decodeBase64Image(dataURL);
+    if (this.electronService.isElectronApp) {
+      this.electronService.ipcRenderer.send('save_image', { data: decodedImage.data, name });
+    }
+  }
+
+  public deleteFile(name: string) {
+    if (this.electronService.isElectronApp) {
+      this.electronService.ipcRenderer.send('delete_image', name);
+    }
   }
 
   public isInputValid(input: NgxFileDropEntry[]) {

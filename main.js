@@ -58,13 +58,19 @@ ipcMain.on('save_image', (event, img) => {
   // construct the path of the image
   const imagePath = path.resolve(dir, img.name);
   fs.writeFile(imagePath, img.data, 'base64', (error) => {
-      if (error)
-        throw error;
+      if (error) throw error;
       console.log('File has been saved on: ', imagePath);
     })
 })
 
 
-ipcMain.on('delete_image', (event, data) => {
-
+ipcMain.on('delete_image', (event, name) => {
+  const imagePath = path.resolve(os.homedir(), 'IDM_Photo', name);
+  console.log(imagePath);
+  if (fs.existsSync(imagePath)) {
+    fs.unlink(imagePath, (err) => {
+      if (err) throw err;
+      console.log(imagePath, ' has been deleted');
+    });
+  }
 })
