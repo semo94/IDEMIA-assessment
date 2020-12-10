@@ -12,8 +12,17 @@ import * as imageGrayscale from 'image-filter-grayscale';
 })
 export class ImageManagerService {
   data: Image;
+  fs: any;
+  os: any;
+  path: any;
 
-  constructor(private electronService: ElectronService) { }
+  constructor(private electronService: ElectronService) {
+    if (this.electronService.isElectronApp) {
+      this.fs = this.electronService.remote.require('fs');
+      this.os = this.electronService.remote.require('os');
+      this.path = this.electronService.remote.require('path');
+    }
+  }
 
   public generateResult(input: NgxFileDropEntry): Observable<any> {
     return new Observable((observer: Observer<Image>) => {
@@ -50,13 +59,30 @@ export class ImageManagerService {
   public saveFile(dataURL: string, name: string) {
     const decodedImage = this.decodeBase64Image(dataURL);
     if (this.electronService.isElectronApp) {
-      this.electronService.ipcRenderer.send('save_image', { data: decodedImage.data, name });
+      // create images folder if not exist
+      const homedir = this.os.homedir();
+      const dir = this.path.resolve(homedir, 'IDM_Photo');
+      if (!this.fs.existsSync(dir)) {
+        this.fs.mkdirSync(dir);
+      }
+      // construct the path of the image
+      const imagePath = this.path.resolve(dir, name);
+      this.fs.writeFile(imagePath, decodedImage.data, 'base64', (error) => {
+        if (error) { throw error; }
+        console.log('File has been saved on: ', imagePath);
+      });
     }
   }
 
   public deleteFile(name: string) {
     if (this.electronService.isElectronApp) {
-      this.electronService.ipcRenderer.send('delete_image', name);
+      const imagePath = this.path.resolve(this.os.homedir(), 'IDM_Photo', name);
+      if (this.fs.existsSync(imagePath)) {
+        this.fs.unlink(imagePath, (err: any) => {
+          if (err) { throw err; }
+          console.log(imagePath, ' has been deleted');
+        });
+      }
     }
   }
 
